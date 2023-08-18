@@ -20,3 +20,29 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.question-container {
+    margin-bottom: 20px;
+}
+
+.question-box {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+.formatted-content {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    overflow: auto;
+}
+
+.title-input {
+    width: 100%; /* Adjust this value to your preferred width */
+    font-size: 18px; /* Adjust font size if needed */
+    border: none;
+    background-color: transparent;
+    padding: 5px;
+    margin-bottom: 5px;
+}

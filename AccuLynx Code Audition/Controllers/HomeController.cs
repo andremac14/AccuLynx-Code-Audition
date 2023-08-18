@@ -14,28 +14,12 @@ namespace AccuLynx_Code_Audition.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
-        private readonly IHttpClientFactory _clientFactory;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(/*ILogger<HomeController> logger,*/ IHttpClientFactory clientFactory)
+        public HomeController(ILogger<HomeController> logger)
         {
-            //_logger = logger;
-            _clientFactory = clientFactory;
+            _logger = logger;
         }
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    var client = _clientFactory.CreateClient();
-        //    var response = await client.GetAsync("https://api.stackexchange.com/2.3/questions?order=desc&sort=creation&site=stackoverflow&key=4RV0*p9WA6iFnU52VNlFWg((\r\n");
-        //    var questions = await response.Content.ReadAsAsync<StackOverflowResponse>();
-
-        //    // Filter questions with an accepted answer and more than 1 answer
-        //    var filteredQuestions = questions.Items
-        //        .Where(q => q.IsAnswered && q.AnswerCount > 1)
-        //        .ToList();
-
-        //    return View(filteredQuestions);
-        //}
 
         public async Task<IActionResult> Index()
         {
@@ -65,7 +49,6 @@ namespace AccuLynx_Code_Audition.Controllers
                                 {
                                     if (question.IsAnswered)
                                     {
-                                        //question.body = HttpUtility.HtmlDecode(question.body); // Decode HTML content
                                         questions.Add(question);
                                     }
                                 }
@@ -80,21 +63,7 @@ namespace AccuLynx_Code_Audition.Controllers
                             questions = System.Text.Json.JsonSerializer.Deserialize<QuestionResponse>(responseBody)?.Items;
                         }
                     }
-
-                    if (questions != null)
-                    {
-                        foreach (var question in questions)
-                        {
-                            Console.WriteLine($"Question ID: {question.QuestionId}");
-                            Console.WriteLine($"Title: {question.Title}");
-                            Console.WriteLine($"Body: {question.body}");
-                            Console.WriteLine("---------");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Failed to deserialize the response.");
-                    }
+                    return View(questions);
                 }
                 else
                 {
@@ -103,11 +72,6 @@ namespace AccuLynx_Code_Audition.Controllers
             }
 
             return View();
-        }
-
-        public class QuestionResponse
-        {
-            public List<Question> Items { get; set; }
         }
 
         static bool IsGzipEncoded(HttpResponseMessage response)

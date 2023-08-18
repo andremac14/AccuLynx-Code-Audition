@@ -25,5 +25,7 @@ namespace AccuLynx_Code_Audition.Models
 
         [JsonProperty("score")]
         public required string score { get; set; }
+
+        public List<Answer> Answers { get; set; }
     }
 }
