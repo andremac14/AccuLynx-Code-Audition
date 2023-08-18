@@ -4,11 +4,6 @@
 
 @model List<Question>
 
-@*<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>*@
-
 <h2>Stack Exchange Questions</h2>
 
 <ul>
@@ -17,6 +12,7 @@
         <li>
             <div class="question-container">
                 <input type="text" class="title-input" value="@question.Title" readonly />
+                @Html.ActionLink("View Answers", "Edit", new { QuestionId=question.QuestionId, title=question.Title, body=question.body, IsAnswered = question.IsAnswered, AnswerCount = question.AnswerCount })
                 <div class="question-box">
                     <div class="formatted-content" contentEditable="false">@Html.Raw(question.body)</div>
                 </div>
@@ -24,3 +20,4 @@
         </li>
     }
 </ul>
+

@@ -74,6 +74,18 @@ namespace AccuLynx_Code_Audition.Controllers
             return View();
         }
 
+        public ActionResult Edit(int QuestionId, string title, string body, bool IsAnswered, int AnswerCount)
+        {
+            Question question = new Question();
+            question.Title = title; 
+            question.body = body;
+            question.QuestionId = QuestionId;
+            question.AnswerCount = AnswerCount;
+            question.IsAnswered = IsAnswered;
+
+            return View(question);
+        }
+
         static bool IsGzipEncoded(HttpResponseMessage response)
         {
             return response.Content.Headers.ContentEncoding.Contains("gzip", StringComparer.OrdinalIgnoreCase);

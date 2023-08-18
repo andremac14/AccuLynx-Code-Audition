@@ -21,11 +21,12 @@ namespace AccuLynx_Code_Audition.Models
         public string Link { get; set; }
 
         [JsonProperty("body")]
-        public required string body { get; set; }
+        public string body { get; set; }
 
         [JsonProperty("score")]
-        public required string score { get; set; }
+        public string score { get; set; }
 
         public List<Answer> Answers { get; set; }
+
     }
 }

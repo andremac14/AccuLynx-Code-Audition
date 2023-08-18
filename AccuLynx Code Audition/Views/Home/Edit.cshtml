@@ -1,0 +1,36 @@
+﻿@model Question
+
+@{
+    ViewData["Title"] = "Question Detail";
+}
+
+<ul>
+
+    <div class="question">
+        <h1>@Model.Title</h1>
+        <p>Question ID: @Model.QuestionId</p>
+        <p>Is Answered: @(Model.IsAnswered ? "Yes" : "No")</p>
+        <p>Answer Count: @Model.AnswerCount</p>
+        <h2>Question Body:</h2>
+        <div class="question-box">
+            <div class="formatted-content" contentEditable="false">@Html.Raw(Model.body)</div>
+        </div>
+    </div>
+
+    <h2>Answers:</h2>
+    @if (Model.Answers != null && Model.Answers.Count > 0)
+    {
+        foreach (var answer in Model.Answers)
+        {
+            <div class="answer">
+                <p>Answer ID: @answer.AnswerId</p>
+                <div>@Html.Raw(answer.Body)</div> <!-- Render HTML content as raw HTML -->
+            </div>
+        }
+    }
+    else
+    {
+        <p>No answers found for this question.</p>
+    }
+
+</ul>
