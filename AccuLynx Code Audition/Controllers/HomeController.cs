@@ -9,6 +9,8 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Web;
 using Microsoft.AspNetCore.Html;
+using static AccuLynx_Code_Audition.Controllers.HomeController;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccuLynx_Code_Audition.Controllers
 {
@@ -24,7 +26,7 @@ namespace AccuLynx_Code_Audition.Controllers
         public async Task<IActionResult> Index()
         {
             string apiKey = "4RV0*p9WA6iFnU52VNlFWg((";
-            string apiUrl = $"https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow&filter=withbody&key={apiKey}";
+            string apiUrl = $"https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow&filter=withbody&answers=2&has_accepted=True&key={apiKey}";
 
             using (HttpClient client = new HttpClient())
             {
@@ -74,15 +76,83 @@ namespace AccuLynx_Code_Audition.Controllers
             return View();
         }
 
-        public ActionResult Edit(int QuestionId, string title, string body, bool IsAnswered, int AnswerCount)
+        public async Task<ActionResult> EditAsync(int QuestionId, string title, bool IsAnswered, int AnswerCount)
         {
+            //Initializing the model
             Question question = new Question();
             question.Title = title; 
-            question.body = body;
             question.QuestionId = QuestionId;
             question.AnswerCount = AnswerCount;
             question.IsAnswered = IsAnswered;
 
+            string apiKey = "4RV0*p9WA6iFnU52VNlFWg((";
+
+            //Getting the body
+            int questionId = QuestionId;
+
+            string apiUrlQuestion = $"https://api.stackexchange.com/2.3/questions/{questionId}?order=desc&sort=activity&site=stackoverflow&filter=withbody&key={apiKey}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(apiUrlQuestion);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Stream responseStream = await response.Content.ReadAsStreamAsync();
+
+                    if (IsGzipEncoded(response))
+                    {
+                        using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+                        using (var reader = new StreamReader(decompressedStream))
+                        {
+                            string responseBody = await reader.ReadToEndAsync();
+                            QuestionResponse questionResponse = JsonConvert.DeserializeObject<QuestionResponse>(responseBody);
+
+                            if (questionResponse != null && questionResponse.Items != null)
+                            {
+                                question.body = questionResponse.Items.FirstOrDefault().body;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+                }
+            }
+
+
+            //Getting the answers
+            string apiUrl = $"https://api.stackexchange.com/2.3/questions/{questionId}/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody&key={apiKey}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Stream responseStream = await response.Content.ReadAsStreamAsync();
+
+                    if (IsGzipEncoded(response))
+                    {
+                        using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+                        using (var reader = new StreamReader(decompressedStream))
+                        {
+                            string responseBody = await reader.ReadToEndAsync();
+                            AnswerResponse answerResponse = JsonConvert.DeserializeObject<AnswerResponse>(responseBody);
+
+                            if (answerResponse != null && answerResponse.Items != null)
+                            {
+                                question.Answers = answerResponse.Items;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+                }
+            }
             return View(question);
         }
 

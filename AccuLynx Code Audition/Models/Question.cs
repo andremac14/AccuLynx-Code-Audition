@@ -28,5 +28,7 @@ namespace AccuLynx_Code_Audition.Models
 
         public List<Answer> Answers { get; set; }
 
+        [JsonProperty("accepted_answer_id")]
+        public int AnswerId { get; set; }
     }
 }

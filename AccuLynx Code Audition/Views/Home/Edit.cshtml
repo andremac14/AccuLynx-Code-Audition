@@ -20,12 +20,27 @@
     <h2>Answers:</h2>
     @if (Model.Answers != null && Model.Answers.Count > 0)
     {
-        foreach (var answer in Model.Answers)
+        using (Html.BeginForm("CheckGuess", "Home")) // Change to your controller and action
         {
-            <div class="answer">
-                <p>Answer ID: @answer.AnswerId</p>
-                <div>@Html.Raw(answer.Body)</div> <!-- Render HTML content as raw HTML -->
-            </div>
+            int index = 0;
+            foreach (var answer in Model.Answers)
+            {
+                <div class="answer">
+                    <p>Answer ID: @answer.AnswerId</p>
+                    <p>Accepted: @answer.IsAccepted</p>
+                    <div class="question-box">
+                        <div class="formatted-content" contentEditable="false">@Html.Raw(answer.body)</div>
+                    </div>
+                    <label>
+                        <input type="radio" name="GuessAnswer" value="@index" required />
+                        Guess this answer is accepted
+                    </label>
+                    <input type="hidden" name="AnswerId" value="@answer.AnswerId" />
+                    <input type="hidden" name="CorrectAnswerIndex" value="@(answer.IsAccepted ? index : -1)" />
+                </div>
+                index++;
+            }
+            <button type="button" onclick="submitGuessForm()">Check Guess</button>
         }
     }
     else
@@ -34,3 +49,4 @@
     }
 
 </ul>
+

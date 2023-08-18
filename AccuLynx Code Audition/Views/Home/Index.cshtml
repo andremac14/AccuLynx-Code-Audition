@@ -12,7 +12,7 @@
         <li>
             <div class="question-container">
                 <input type="text" class="title-input" value="@question.Title" readonly />
-                @Html.ActionLink("View Answers", "Edit", new { QuestionId=question.QuestionId, title=question.Title, body=question.body, IsAnswered = question.IsAnswered, AnswerCount = question.AnswerCount })
+                @Html.ActionLink("View Answers", "Edit", new { QuestionId=question.QuestionId, title=question.Title, IsAnswered = question.IsAnswered, AnswerCount = question.AnswerCount })
                 <div class="question-box">
                     <div class="formatted-content" contentEditable="false">@Html.Raw(question.body)</div>
                 </div>
@@ -20,4 +20,3 @@
         </li>
     }
 </ul>
-
