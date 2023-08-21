@@ -26,7 +26,8 @@ namespace AccuLynx_Code_Audition.Controllers
         public async Task<IActionResult> Index()
         {
             string apiKey = "4RV0*p9WA6iFnU52VNlFWg((";
-            string apiUrl = $"https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow&filter=withbody&answers=2&has_accepted=True&key={apiKey}";
+
+            string apiUrl = $"https://api.stackexchange.com/2.2/search/advanced?page=1&order=desc&sort=activity&accepted=True&filter=withbody&answers=2&site=stackoverflow&key={apiKey}";
 
             using (HttpClient client = new HttpClient())
             {
@@ -76,14 +77,10 @@ namespace AccuLynx_Code_Audition.Controllers
             return View();
         }
 
-        public async Task<ActionResult> EditAsync(int QuestionId, string title, bool IsAnswered, int AnswerCount)
+        public async Task<ActionResult> EditAsync(int QuestionId)
         {
-            //Initializing the model
-            Question question = new Question();
-            question.Title = title; 
+            Question question = new Question(); 
             question.QuestionId = QuestionId;
-            question.AnswerCount = AnswerCount;
-            question.IsAnswered = IsAnswered;
 
             string apiKey = "4RV0*p9WA6iFnU52VNlFWg((";
 
@@ -110,7 +107,7 @@ namespace AccuLynx_Code_Audition.Controllers
 
                             if (questionResponse != null && questionResponse.Items != null)
                             {
-                                question.body = questionResponse.Items.FirstOrDefault().body;
+                                question = questionResponse.Items.FirstOrDefault();
                             }
                         }
                     }
